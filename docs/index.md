@@ -19,12 +19,30 @@ The application context looks like in the following diagram:
 
 ![](./diagrams/app-context.drawio.png){ width=800 }
 
-Travelers use mobile application to book a ride between two locations within the same city, the Car Ride Solution dispatches an autonomous vehicle, uses traffic report to compute ETA and pricing. The application is also monitoring existing rides via car telemetries. The Marketing analysis is an example of external system interested by the solution generated data. 
+Travelers use mobile application to book a ride between two locations within the same city, the Car Ride Solution dispatches an autonomous vehicle, uses traffic report to compute ETA and pricing. The application is also monitoring existing rides via car telemetries. The Marketing analysis is an example of external system interested by the generated data. 
 
 ## Requirements
 
-* Demonstrate an end-to-end solution with Domain Driven Design elements, focusing on an Event-Driven Architecture implementation (top down with techno mapping)
-* Handle duplicate delivery from AWS EventBridge. [See proposed solution](./es-duplicate-evt.md).
-* A Command Query Responsibility Segregation example
-* An event-driven Saga choreography
-* A multi clusters deployment for AWS EventBridge with independant governance.
+* User will use a simple user interface to demonstrate booking a car ride and then accept the payment.
+* The first components will be the CarRide management and the car fleet / inventory management.
+* The CarRide management will demonstrate Command Query Responsibility Segregation combined with Event Sourcing.
+* Demonstrate and document the technology choices and fit for purpose.
+
+See [event storming and DDD section for business requirements analysis](./ddd.md).
+
+### Event Sourcing
+
+[Event sourcing](https://jbcodeforce.github.io/eda-studies/patterns/event-sourcing/) is a design pattern adopted in Event-driven solution. It is not mandatory but it delivers some interesting advantages for such implementation, in particular to explain what happened to the business entity. The CarRide is using the event sourcing, so a dedicated event stores to keep the change to the CarRide Entity.
+
+![](./diagrams/car-ride-es.drawio.png)
+
+
+### Command Query Responsibility Segregation
+
+CQRS is used in a lot of distributed solution, to be able to scale the read model. DynamoDB by design is supporting CQRS with the read replicas feature. For more details see the [CQRS pattern explanation](https://jbcodeforce.github.io/eda-studies/patterns/cqrs/index.md).
+
+### Saga pattern
+
+The classical implementation of Saga is to use an orchestrator to manage the state of the Saga and being able to rollback the transaction with compensation API. For more details see the [Saga pattern explanation](https://jbcodeforce.github.io/eda-studies/patterns/saga/index.md).
+
+An alternate is to use Choreography. 
